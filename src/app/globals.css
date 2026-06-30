@@ -1,0 +1,284 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Nova Consortium — "ops dashboard" theme.
+  Violet-tinted neutrals (never pure black/white), one vivid accent (#836EF9,
+  the torch flame). Light + dark are separate palettes, not one inverted.
+  Token names kept shadcn-compatible so primitives cascade. HSL channels.
+*/
+
+@layer base {
+  :root {
+    /* Light — violet-tinted paper, deep indigo ink. */
+    --background: 250 40% 99%;
+    --foreground: 250 32% 12%;
+    --card: 250 36% 100%;
+    --card-foreground: 250 32% 12%;
+    --popover: 250 40% 99%;
+    --popover-foreground: 250 32% 12%;
+    --primary: 248 76% 60%;
+    --primary-foreground: 250 40% 99%;
+    --secondary: 250 30% 95%;
+    --secondary-foreground: 250 30% 18%;
+    --muted: 250 28% 95%;
+    --muted-foreground: 250 14% 42%;
+    --accent: 248 80% 96%;
+    --accent-foreground: 248 60% 40%;
+    --destructive: 342 78% 48%;
+    --destructive-foreground: 250 40% 99%;
+    --success: 158 64% 38%;
+    --warning: 32 92% 48%;
+    --border: 250 24% 90%;
+    --input: 250 24% 90%;
+    --ring: 248 76% 60%;
+    --radius: 0.9rem;
+
+    /* Glow color (accent halo behind hero / header). */
+    --glow: 248 91% 66%;
+  }
+
+  .dark {
+    /* Dark — deep violet-indigo, never #000. Flame violet pops against it. */
+    --background: 252 32% 7%;
+    --foreground: 250 24% 95%;
+    --card: 252 26% 10%;
+    --card-foreground: 250 24% 95%;
+    --popover: 252 28% 9%;
+    --popover-foreground: 250 24% 95%;
+    --primary: 248 91% 72%;
+    --primary-foreground: 252 40% 8%;
+    --secondary: 250 22% 16%;
+    --secondary-foreground: 250 24% 92%;
+    --muted: 250 20% 15%;
+    --muted-foreground: 250 16% 62%;
+    --accent: 250 30% 18%;
+    --accent-foreground: 248 90% 84%;
+    --destructive: 342 84% 60%;
+    --destructive-foreground: 252 40% 8%;
+    --success: 158 64% 52%;
+    --warning: 36 96% 60%;
+    --border: 250 22% 17%;
+    --input: 250 22% 18%;
+    --ring: 248 91% 72%;
+
+    --glow: 250 95% 66%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "cv11", "tnum" 0;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.28);
+    color: hsl(var(--foreground));
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* Tinted, slim scrollbar that matches the surface. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--foreground) / 0.18) transparent;
+  }
+}
+
+@layer components {
+  .display {
+    font-family: var(--font-sans), "Neue Haas Grotesk Display Pro",
+      "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+  }
+
+  /*
+    Violet glow — a purposeful accent halo, not a decorative blanket. Two
+    soft radial pools tinted with --glow. Used behind the hero + page top.
+  */
+  .glow-field {
+    position: absolute;
+    inset: -10% -10% auto -10%;
+    height: 46vh;
+    min-height: 300px;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(
+        42rem 26rem at 22% 8%,
+        hsl(var(--glow) / 0.22),
+        transparent 70%
+      ),
+      radial-gradient(
+        34rem 22rem at 88% 0%,
+        hsl(var(--glow) / 0.16),
+        transparent 72%
+      );
+    mask-image: linear-gradient(to bottom, black 0%, transparent 92%);
+  }
+  .dark .glow-field {
+    background:
+      radial-gradient(
+        46rem 28rem at 20% 4%,
+        hsl(var(--glow) / 0.3),
+        transparent 68%
+      ),
+      radial-gradient(
+        36rem 24rem at 90% 0%,
+        hsl(var(--glow) / 0.2),
+        transparent 70%
+      );
+  }
+
+  /*
+    Glass surface — translucent + blurred. Reserved for the floating header
+    and the hero stat rail, where layering over the glow reads as depth.
+  */
+  .glass {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid hsl(var(--border) / 0.7);
+  }
+
+  /* Solid elevated card with a hairline ring + soft floor shadow. */
+  .panel {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow:
+      0 1px 0 hsl(var(--foreground) / 0.02) inset,
+      0 18px 40px -28px hsl(252 50% 8% / 0.5);
+  }
+
+  /* Accent ring used on hover/active for interactive panels. */
+  .ring-violet {
+    box-shadow:
+      0 0 0 1px hsl(var(--primary) / 0.5),
+      0 0 28px -6px hsl(var(--glow) / 0.45);
+  }
+}
+
+/* ── Motion (transform + opacity only) ─────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fade-up-lg {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fade-down {
+  from { opacity: 0; transform: translate3d(0, -6px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulse-ring {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  70%  { transform: scale(2.2); opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  20%, 60% { transform: translate3d(-3px, 0, 0); }
+  40%, 80% { transform: translate3d(3px, 0, 0); }
+}
+
+/* Height-grow for expanding rows (grid-template-rows trick). */
+@keyframes expand-row {
+  from { grid-template-rows: 0fr; opacity: 0; transform: translate3d(0, -8px, 0); }
+  to   { grid-template-rows: 1fr; opacity: 1; transform: none; }
+}
+@keyframes collapse-row {
+  from { grid-template-rows: 1fr; opacity: 1; transform: none; }
+  to   { grid-template-rows: 0fr; opacity: 0; transform: translate3d(0, -6px, 0); }
+}
+.expand-row-enter {
+  display: grid;
+  grid-template-rows: 1fr;
+  animation: expand-row 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.expand-row-exit {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: 0 !important;
+  animation: collapse-row 260ms cubic-bezier(0.4, 0, 1, 1) both;
+  pointer-events: none;
+}
+.expand-row-enter > .expand-row-inner,
+.expand-row-exit > .expand-row-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Dialog enter/exit. */
+@keyframes dialog-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dialog-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes dialog-content-in {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)) scale(0.96); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes dialog-content-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to   { opacity: 0; transform: translate(-50%, calc(-50% + 10px)) scale(0.97); }
+}
+.dialog-overlay[data-state="open"] { animation: dialog-overlay-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.dialog-overlay[data-state="closed"] { animation: dialog-overlay-out 180ms cubic-bezier(0.4, 0, 1, 1) both; }
+.dialog-content[data-state="open"] { animation: dialog-content-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.dialog-content[data-state="closed"] { animation: dialog-content-out 200ms cubic-bezier(0.4, 0, 1, 1) both; }
+
+.stagger > * {
+  animation-delay: calc(var(--stagger-base, 0ms) + var(--stagger-step, 60ms) * var(--i, 0));
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted) / 0.5) 0%,
+    hsl(var(--muted) / 0.85) 50%,
+    hsl(var(--muted) / 0.5) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
